@@ -21,7 +21,6 @@ public class RuntimeMeshLoader : ModuleRules
 
         PublicIncludePaths.AddRange(
 			new string[] {
-				"RuntimeMeshLoader/Public",
                 Path.Combine(ThirdPartyPath, "assimp/include")
 				// ... add public include paths required here ...
 			}
@@ -30,7 +29,6 @@ public class RuntimeMeshLoader : ModuleRules
 		
 		PrivateIncludePaths.AddRange(
 			new string[] {
-				"RuntimeMeshLoader/Private",
 				// ... add other private include paths required here ...
 			}
 			);
