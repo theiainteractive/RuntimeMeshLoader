@@ -88,8 +88,6 @@ html/*
 
 # Special stuff for special build system
 Compiled_4_23/*/**
-WidgetFrameworkPlugin/Binaries/**
-WidgetFrameworkPlugin/Intermediate/**
 Stored/EngineVersion/ENGINE_VERSION_STATE.txt
 engine-paths.bat
 
