@@ -5,6 +5,13 @@
 #include <assimp/scene.h>       // Output data structure
 #include <assimp/postprocess.h> // Post processing flags
 
+// Fix error on Plugin Compile
+ULoaderBPFunctionLibrary::ULoaderBPFunctionLibrary(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+
+}
+
 void FindMeshInfo(const aiScene* scene, aiNode* node, FReturnedData& result)
 {
 
