@@ -72,7 +72,7 @@ class RUNTIMEMESHLOADER_API ULoaderBPFunctionLibrary : public UBlueprintFunction
 public:
 
 	UFUNCTION(BlueprintCallable,Category="MeshLoader")
-	static FReturnedData LoadMesh(FString filepath,EPathType type= EPathType:: Absolute);
+	static FReturnedData LoadMesh(FString filepath,EPathType type= EPathType::Absolute);
 
 	
 };

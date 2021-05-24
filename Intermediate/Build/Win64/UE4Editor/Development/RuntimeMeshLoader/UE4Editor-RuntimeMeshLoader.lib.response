@@ -1,0 +1,16 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UE4Editor-RuntimeMeshLoader.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"E:\Projects\RuntimeMeshLoader426\Intermediate\Build\Win64\RuntimeMeshLoader426Editor\Development\Engine\SharedPCH.Engine.ShadowErrors.h.obj"
+"E:\Projects\RuntimeMeshLoader426\Plugins\RuntimeMeshLoader\Intermediate\Build\Win64\UE4Editor\Development\RuntimeMeshLoader\LoaderBPFunctionLibrary.cpp.obj"
+"E:\Projects\RuntimeMeshLoader426\Plugins\RuntimeMeshLoader\Intermediate\Build\Win64\UE4Editor\Development\RuntimeMeshLoader\RuntimeMeshLoader.cpp.obj"
+"E:\Projects\RuntimeMeshLoader426\Plugins\RuntimeMeshLoader\Intermediate\Build\Win64\UE4Editor\Development\RuntimeMeshLoader\LoaderBPFunctionLibrary.gen.cpp.obj"
+"E:\Projects\RuntimeMeshLoader426\Plugins\RuntimeMeshLoader\Intermediate\Build\Win64\UE4Editor\Development\RuntimeMeshLoader\RuntimeMeshLoader.init.gen.cpp.obj"
+"E:\Projects\RuntimeMeshLoader426\Plugins\RuntimeMeshLoader\Intermediate\Build\Win64\UE4Editor\Development\RuntimeMeshLoader\Default.rc2.res"
+/OUT:"E:\Projects\RuntimeMeshLoader426\Plugins\RuntimeMeshLoader\Intermediate\Build\Win64\UE4Editor\Development\RuntimeMeshLoader\UE4Editor-RuntimeMeshLoader.lib"
+/INCLUDE:IMPLEMENT_MODULE_RuntimeMeshLoader
