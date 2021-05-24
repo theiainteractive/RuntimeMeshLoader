@@ -20,6 +20,9 @@
 *.dll
 !libalias_api.dll
 !vcruntime140_1.dll
+!assimp-vc140-mt.dll
+!assimp-vc141-mt.dll
+!zlib.dll
 
 # Fortran module files
 *.mod
