@@ -13,6 +13,9 @@
   "CanContainContent": true,
   "IsBetaVersion": false,
   "Installed": false,
+  "SupportedTargetPlatforms": [
+    "Win64"
+  ],
   "Modules": [
     {
       "Name": "RuntimeMeshLoader",
