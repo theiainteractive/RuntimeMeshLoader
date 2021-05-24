@@ -70,6 +70,12 @@ class RUNTIMEMESHLOADER_API ULoaderBPFunctionLibrary : public UBlueprintFunction
 	GENERATED_BODY()
 	
 public:
+	// Fix error on Plugin Compile
+	ULoaderBPFunctionLibrary(const FObjectInitializer& ObjectInitializer)
+		: Super(ObjectInitializer)
+	{
+
+	}
 
 	UFUNCTION(BlueprintCallable,Category="MeshLoader")
 	static FReturnedData LoadMesh(FString filepath,EPathType type= EPathType::Absolute);
