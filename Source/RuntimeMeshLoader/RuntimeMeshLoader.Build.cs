@@ -1,30 +1,21 @@
-// Copyright 1998-2017 Epic Games, Inc. All Rights Reserved.
+// Copyright Epic Games, Inc. All Rights Reserved.
 
 using UnrealBuildTool;
 using System.IO;
 
 public class RuntimeMeshLoader : ModuleRules
 {
-    private string ModulePath
-    {
-        get { return ModuleDirectory; }
-    }
-
-    private string ThirdPartyPath
-    {
-        get { return Path.GetFullPath(Path.Combine(ModulePath, "../../ThirdParty/")); }
-    }
-
-    public RuntimeMeshLoader(ReadOnlyTargetRules Target) : base(Target)
+	public RuntimeMeshLoader(ReadOnlyTargetRules Target) : base(Target)
 	{
-	    PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
+		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
+        var thirdPartyPath = Path.GetFullPath(Path.Combine(ModuleDirectory, "..\\..\\ThirdParty\\"));
 
-        PublicIncludePaths.AddRange(
+		PublicIncludePaths.AddRange(
 			new string[] {
-                Path.Combine(ThirdPartyPath, "assimp/include")
+                Path.Combine(thirdPartyPath, "assimp\\include")
 				// ... add public include paths required here ...
 			}
-		);
+			);
 				
 		
 		PrivateIncludePaths.AddRange(
@@ -38,21 +29,20 @@ public class RuntimeMeshLoader : ModuleRules
 			new string[]
 			{
 				"Core",
-                "CoreUObject",
-                "Engine",
-                "RHI",
-                "RenderCore",
                 "ProceduralMeshComponent"
-                // ... add other public dependencies that you statically link with here ...
+				// ... add other public dependencies that you statically link with here ...
 			}
 			);
-
-
-        PrivateDependencyModuleNames.AddRange(
+			
+		
+		PrivateDependencyModuleNames.AddRange(
 			new string[]
 			{
+				"CoreUObject",
+				"Engine",
 				"Slate",
 				"SlateCore",
+				"Projects"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
@@ -61,20 +51,17 @@ public class RuntimeMeshLoader : ModuleRules
 		DynamicallyLoadedModuleNames.AddRange(
 			new string[]
 			{
-            }
-            );
+				// ... add any modules that your module loads dynamically here ...
+			}
+			);
 
-        if ((Target.Platform == UnrealTargetPlatform.Win64) || (Target.Platform == UnrealTargetPlatform.Win32))
+			PublicDelayLoadDLLs.Add("assimp-vc142-mt.dll");
+
+        if (Target.Platform == UnrealTargetPlatform.Win64)
         {
-            string PlatformString = (Target.Platform == UnrealTargetPlatform.Win64) ? "Win64" : "Win32";
-            PublicAdditionalLibraries.Add(Path.Combine(ThirdPartyPath, "assimp/lib",PlatformString, "assimp-vc140-mt.lib"));
-
-            RuntimeDependencies.Add(new RuntimeDependency(Path.Combine(ThirdPartyPath, "assimp/bin",PlatformString, "assimp-vc140-mt.dll")));
+            PublicAdditionalLibraries.Add(Path.Combine(thirdPartyPath, "assimp\\lib", "assimp-vc142-mt.lib"));
+        
+            RuntimeDependencies.Add(Path.Combine(thirdPartyPath, "assimp\\bin", "assimp-vc142-mt.dll"));
         }
-		else if(Target.Platform == UnrealTargetPlatform.Mac)
-		{
-			string PlatformString =  "Mac";
-            PublicAdditionalLibraries.Add(Path.Combine(ThirdPartyPath, "assimp/lib",PlatformString, "libassimp.4.1.0.dylib"));
-		}
-    }
+	}
 }
