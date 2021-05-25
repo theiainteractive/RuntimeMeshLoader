@@ -9,6 +9,8 @@
 
 #include "IImageWrapper.h"
 #include "Runtime/ImageWrapper/Public/IImageWrapperModule.h"
+#include "Modules/ModuleManager.h"
+#include "Misc/FileHelper.h"
 #include "HAL/FileManager.h"
 #include "HAL/FileManagerGeneric.h"
 

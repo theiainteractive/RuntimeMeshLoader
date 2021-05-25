@@ -3,6 +3,7 @@
 #include "RuntimeMeshLoader.h"
 
 #include "Interfaces/IPluginManager.h"
+#include "HAL/PlatformProcess.h"
 
 #define LOCTEXT_NAMESPACE "FRuntimeMeshLoaderModule"
 
