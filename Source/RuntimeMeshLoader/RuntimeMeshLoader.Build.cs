@@ -12,7 +12,8 @@ public class RuntimeMeshLoader : ModuleRules
 
 		PublicIncludePaths.AddRange(
 			new string[] {
-                Path.Combine(thirdPartyPath, "assimp\\include")
+                Path.Combine(thirdPartyPath, "assimp\\include"),
+                 Path.Combine(thirdPartyPath, "stb\\include")
 				// ... add public include paths required here ...
 			}
 			);

@@ -7,6 +7,8 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include "stb_image.h"
+
 #include "IImageWrapper.h"
 #include "Runtime/ImageWrapper/Public/IImageWrapperModule.h"
 #include "Modules/ModuleManager.h"
@@ -203,4 +205,72 @@ UTexture2D* UMeshLoader::LoadTexture2DFromFile(const FString& FullFilePath, bool
 	// Success!
 	IsValid = true;
 	return LoadedT2D;
+}
+
+UTexture2D* UMeshLoader::CreateTexture(UObject* Outer, const TArray<uint8>& PixelData, int32 InSizeX, int32 InSizeY, EPixelFormat InFormat, FName BaseName)
+{
+	// Shamelessly copied from UTexture2D::CreateTransient with a few modifications
+	if (InSizeX <= 0 || InSizeY <= 0 ||
+		(InSizeX % GPixelFormats[InFormat].BlockSizeX) != 0 ||
+		(InSizeY % GPixelFormats[InFormat].BlockSizeY) != 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Invalid parameters specified for UImageLoader::CreateTexture()"));
+		return nullptr;
+	}
+
+	// Most important difference with UTexture2D::CreateTransient: we provide the new texture with a name and an owner
+	FName TextureName = MakeUniqueObjectName(Outer, UTexture2D::StaticClass(), BaseName);
+	UTexture2D* NewTexture = NewObject<UTexture2D>(Outer, TextureName, RF_Transient);
+
+	NewTexture->PlatformData = new FTexturePlatformData();
+	NewTexture->PlatformData->SizeX = InSizeX;
+	NewTexture->PlatformData->SizeY = InSizeY;
+	NewTexture->PlatformData->PixelFormat = InFormat;
+
+	// Allocate first mipmap and upload the pixel data
+	int32 NumBlocksX = InSizeX / GPixelFormats[InFormat].BlockSizeX;
+	int32 NumBlocksY = InSizeY / GPixelFormats[InFormat].BlockSizeY;
+	FTexture2DMipMap* Mip = new(NewTexture->PlatformData->Mips) FTexture2DMipMap();
+	Mip->SizeX = InSizeX;
+	Mip->SizeY = InSizeY;
+	Mip->BulkData.Lock(LOCK_READ_WRITE);
+	void* TextureData = Mip->BulkData.Realloc(NumBlocksX * NumBlocksY * GPixelFormats[InFormat].BlockBytes);
+	FMemory::Memcpy(TextureData, PixelData.GetData(), PixelData.Num());
+	Mip->BulkData.Unlock();
+
+	NewTexture->UpdateResource();
+	return NewTexture;
+}
+
+UTexture2D* UMeshLoader::LoadTGAImageFromDisk(UObject* Outer, const FString& ImagePath)
+{
+	// Check if the file exists first
+	if (!FPaths::FileExists(ImagePath))
+	{
+		UE_LOG(LogTemp, Error, TEXT("File not found: %s"), *ImagePath);
+		return nullptr;
+	}
+
+	// Load the compressed byte data from the file
+	TArray<uint8> FileData;
+	if (!FFileHelper::LoadFileToArray(FileData, *ImagePath))
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to load file: %s"), *ImagePath);
+		return nullptr;
+	}
+
+	int x, y, n;
+	unsigned char *data = stbi_load(TCHAR_TO_ANSI(*ImagePath), &x, &y, &n, 4);
+
+	if (data == nullptr)
+		UE_LOG(LogTemp, Error, TEXT("Failed to load TGA data for file: %s"), *ImagePath);
+
+	TArray<uint8> RawData;
+	RawData.Append(data, x*y*GPixelFormats[PF_R8G8B8A8].BlockBytes);
+
+	stbi_image_free(data);
+
+	// Create the texture and upload the uncompressed image data
+	FString TextureBaseName = TEXT("Texture_") + FPaths::GetBaseFilename(ImagePath);
+	return CreateTexture(Outer, RawData, x, y, PF_R8G8B8A8, FName(*TextureBaseName));
 }
