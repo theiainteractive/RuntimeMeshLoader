@@ -8,6 +8,7 @@
 #include <assimp/postprocess.h>
 
 #include "stb_image.h"
+#include "RHI.h"
 
 #include "IImageWrapper.h"
 #include "Runtime/ImageWrapper/Public/IImageWrapperModule.h"
@@ -230,15 +231,29 @@ UTexture2D* UMeshLoader::CreateTexture(UObject* Outer, const TArray<uint8>& Pixe
 	// Allocate first mipmap and upload the pixel data
 	int32 NumBlocksX = InSizeX / GPixelFormats[InFormat].BlockSizeX;
 	int32 NumBlocksY = InSizeY / GPixelFormats[InFormat].BlockSizeY;
-	FTexture2DMipMap* Mip = new(NewTexture->PlatformData->Mips) FTexture2DMipMap();
-	Mip->SizeX = InSizeX;
-	Mip->SizeY = InSizeY;
-	Mip->BulkData.Lock(LOCK_READ_WRITE);
-	void* TextureData = Mip->BulkData.Realloc(NumBlocksX * NumBlocksY * GPixelFormats[InFormat].BlockBytes);
-	FMemory::Memcpy(TextureData, PixelData.GetData(), PixelData.Num());
-	Mip->BulkData.Unlock();
+	//FTexture2DMipMap* Mip = new(NewTexture->PlatformData->Mips) FTexture2DMipMap();
 
-	NewTexture->UpdateResource();
+	TIndirectArray<FTexture2DMipMap>& Mips = NewTexture->PlatformData->Mips;
+	const int32 FirstMipTailIndex = Mips.Num() - FMath::Max(1, NewTexture->PlatformData->GetNumMipsInTail());
+	for (int32 MipIndex = 0; MipIndex <= FirstMipTailIndex; MipIndex++)
+	{
+		FTexture2DMipMap& Mip = Mips[MipIndex];
+		if (Mip.BulkData.GetBulkDataSize() <= 0)
+		{
+			UE_LOG(LogTemp, Error, TEXT("Corrupt texture [%s]! Missing bulk data for MipIndex=%d"), *NewTexture->GetFullName(), MipIndex);
+		}
+		else
+		{
+			Mip.SizeX = InSizeX;
+			Mip.SizeY = InSizeY;
+			Mip.BulkData.Lock(LOCK_READ_WRITE);
+			void* TextureData = Mip.BulkData.Realloc(NumBlocksX * NumBlocksY * GPixelFormats[InFormat].BlockBytes);
+			FMemory::Memcpy(TextureData, PixelData.GetData(), PixelData.Num());
+			Mip.BulkData.Unlock();
+
+			NewTexture->UpdateResource();
+		}
+	}
 	return NewTexture;
 }
 
