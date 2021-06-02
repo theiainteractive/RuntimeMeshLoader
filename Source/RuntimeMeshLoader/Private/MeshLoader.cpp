@@ -210,6 +210,13 @@ UTexture2D* UMeshLoader::LoadTexture2DFromFile(const FString& FullFilePath, bool
 
 UTexture2D* UMeshLoader::CreateTexture(UObject* Outer, const TArray<uint8>& PixelData, int32 InSizeX, int32 InSizeY, EPixelFormat InFormat, FName BaseName)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Outer: %s"), *GetNameSafe(Outer));
+	UE_LOG(LogTemp, Warning, TEXT("PixelData: %i"), PixelData.GetData());
+	UE_LOG(LogTemp, Warning, TEXT("InSizeX: %i"), InSizeX);
+	UE_LOG(LogTemp, Warning, TEXT("InSizeY: %i"), InSizeY);
+	UE_LOG(LogTemp, Warning, TEXT("BaseName: %s"), *BaseName.ToString());
+
+
 	// Shamelessly copied from UTexture2D::CreateTransient with a few modifications
 	if (InSizeX <= 0 || InSizeY <= 0 ||
 		(InSizeX % GPixelFormats[InFormat].BlockSizeX) != 0 ||
@@ -234,9 +241,11 @@ UTexture2D* UMeshLoader::CreateTexture(UObject* Outer, const TArray<uint8>& Pixe
 	//FTexture2DMipMap* Mip = new(NewTexture->PlatformData->Mips) FTexture2DMipMap();
 
 	TIndirectArray<FTexture2DMipMap>& Mips = NewTexture->PlatformData->Mips;
+	// UE_LOG(LogTemp, Warning, TEXT("Mips.Num() = %d"), NewTexture->PlatformData->Mips.Num());
 	const int32 FirstMipTailIndex = Mips.Num() - FMath::Max(1, NewTexture->PlatformData->GetNumMipsInTail());
 	for (int32 MipIndex = 0; MipIndex <= FirstMipTailIndex; MipIndex++)
 	{
+		// UE_LOG(LogTemp, Warning, TEXT("Mips.Num() = %d"), Mips.Num());
 		FTexture2DMipMap& Mip = Mips[MipIndex];
 		if (Mip.BulkData.GetBulkDataSize() <= 0)
 		{
@@ -257,7 +266,7 @@ UTexture2D* UMeshLoader::CreateTexture(UObject* Outer, const TArray<uint8>& Pixe
 	return NewTexture;
 }
 
-UTexture2D* UMeshLoader::LoadTGAImageFromDisk(UObject* Outer, const FString& ImagePath)
+UTexture2D* UMeshLoader::LoadTgaImageFromFile(UObject* Outer, const FString& ImagePath)
 {
 	// Check if the file exists first
 	if (!FPaths::FileExists(ImagePath))

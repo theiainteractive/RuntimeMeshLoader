@@ -87,10 +87,12 @@ class RUNTIMEMESHLOADER_API UMeshLoader : public UBlueprintFunctionLibrary
 	UFUNCTION(BlueprintCallable, Category="RuntimeMeshLoader")
 	static UTexture2D* LoadTexture2DFromFile(const FString& FullFilePath, bool& IsValid, int32& Width, int32& Height);
 
+
 	//Added functions
+	
 	UFUNCTION(BlueprintCallable, Category = "RuntimeMeshLoader")
 	static UTexture2D* CreateTexture(UObject* Outer, const TArray<uint8>& PixelData, int32 InSizeX, int32 InSizeY, EPixelFormat InFormat, FName BaseName);
 
-	UFUNCTION(BlueprintCallable, Category = "RuntimeMeshLoader")
-	static UTexture2D* LoadTGAImageFromDisk(UObject* Outer, const FString& ImagePath);
+	UFUNCTION(BlueprintCallable, Category = "RuntimeMeshLoader" /*, meta = (HidePin = "Outer", DefaultToSelf = "Outer")*/)
+	static UTexture2D* LoadTgaImageFromFile(UObject* Outer, const FString& ImagePath);
 };
